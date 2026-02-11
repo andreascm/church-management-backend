@@ -1,0 +1,9 @@
+{
+  "name": "church-management-backend",
+  "version": "1.0.0",
+  "description": "A robust backend application for church management built with modern technologies and clean architecture principles.",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

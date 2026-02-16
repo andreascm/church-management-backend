@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+    # PostgreSQL Database
+    postgres:
+        image: postgres:15-alpine
+        container_name: church-app-postgres-dev
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: church_app_dev
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_dev_data:/var/lib/postgresql/data
+            # - ./prisma/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - church-app-network
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 5s
+            timeout: 3s
+            retries: 5
+
+volumes:
+    postgres_dev_data:
+        driver: local
+
+networks:
+    church-app-network:
+        driver: bridge

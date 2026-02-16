@@ -4,19 +4,19 @@ A robust backend application for church management built with modern technologie
 
 ## Tech Stack
 
-| Layer      | Technology                    |
-|------------|-------------------------------|
-| Language   | TypeScript                    |
-| Runtime    | Node.js 18+                   |
-| Framework  | NestJS                        |
-| API        | REST                          |
-| Database   | PostgreSQL                    |
-| ORM        | Prisma                        |
-| Auth       | JWT + argon2 + TOTP          |
-| Events     | Outbox + Postgres NOTIFY      |
-| Cache      | Redis (optional)              |
-| Logging    | pino                          |
-| Deployment | Docker                        |
+| Layer      | Technology               |
+| ---------- | ------------------------ |
+| Language   | TypeScript               |
+| Runtime    | Node.js 18+              |
+| Framework  | NestJS                   |
+| API        | REST                     |
+| Database   | PostgreSQL               |
+| ORM        | Prisma                   |
+| Auth       | JWT + argon2 + TOTP      |
+| Events     | Outbox + Postgres NOTIFY |
+| Cache      | Redis (optional)         |
+| Logging    | pino                     |
+| Deployment | Docker                   |
 
 ## Architecture
 
@@ -35,6 +35,7 @@ This project follows **Clean Architecture** principles with clear separation of 
 - Docker & Docker Compose
 
 ## Project Structure
+
 ```
 church-app-backend/
 │
@@ -75,6 +76,7 @@ church-app-backend/
 ```
 
 ## Installation
+
 ```bash
 # Install dependencies
 npm install
@@ -83,7 +85,7 @@ npm install
 cp .env.example .env
 
 # Start infrastructure (PostgreSQL, Redis)
-docker-compose up -d postgres redis
+docker compose up -d postgres redis
 
 # Run database migrations
 npx prisma migrate dev
@@ -95,60 +97,79 @@ npx prisma generate
 ## Configuration
 
 Create a `.env` file based on `.env.example`:
+
 ```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/church_app"
-
-# JWT
-JWT_SECRET="your-secret-key"
-JWT_EXPIRATION="15m"
-JWT_REFRESH_EXPIRATION="7d"
-
-# Redis (optional)
-REDIS_URL="redis://localhost:6379"
-REDIS_TTL=3600
-
 # Application
 NODE_ENV="development"
 PORT=3000
 API_PREFIX="api"
 
-# TOTP
-TOTP_ISSUER="ChurchApp"
-TOTP_WINDOW=1
-
 # Logging
 LOG_LEVEL="info"
 ```
 
-## Running the Application
+## Quick Start
 
-### Development
+### One-Command Setup (Unix/Mac/Linux)
+
 ```bash
+# Start everything (PostgreSQL, Redis, migrations)
+./start.sh
+
+# Start development server
 npm run start:dev
 ```
 
-### Production
+### Using Make (if available)
+
 ```bash
-npm run build
-npm run start:prod
+make start    # Start infrastructure
+make dev      # Start dev server
+make stop     # Stop infrastructure
+make logs     # View logs
+make studio   # Open Prisma Studio
+make reset    # Reset everything
 ```
 
-### Docker
+### Manual Docker Commands
+
 ```bash
-# Build and run everything
-docker-compose up -d
+# Start infrastructure only
+npm run docker:dev
 
 # View logs
-docker-compose logs -f app
+npm run docker:logs
 
-# Stop all services
-docker-compose down
+# Stop infrastructure
+npm run docker:down
+
+# Production build
+npm run docker:build
+npm run docker:prod
+```
+
+### Access Points
+
+- API: http://localhost:3000/api
+- Health Check: http://localhost:3000/api/health
+- Prisma Studio: `npx prisma studio` (http://localhost:5555)
+- PostgreSQL: localhost:5432
+- Redis: localhost:6379
+
+### Stopping Services
+
+```bash
+# Unix/Mac/Linux
+./stop.sh
+
+# Or manually
+npm run docker:down
 ```
 
 ## Database
 
 ### Migrations
+
 ```bash
 # Create a new migration
 npx prisma migrate dev --name migration_name
@@ -161,11 +182,13 @@ npx prisma migrate reset
 ```
 
 ### Prisma Studio
+
 ```bash
 npx prisma studio
 ```
 
 ## Testing
+
 ```bash
 # Unit tests
 npm run test
@@ -183,6 +206,7 @@ npm run test:cov
 ## API Documentation
 
 Once running, access the API documentation at:
+
 - Swagger UI: `http://localhost:3000/api/docs`
 
 ## Key Features
@@ -190,6 +214,7 @@ Once running, access the API documentation at:
 ### Identity Module
 
 #### Authentication
+
 - User registration with email verification
 - Login with JWT tokens
 - Refresh token rotation
@@ -197,16 +222,19 @@ Once running, access the API documentation at:
 - Password hashing with argon2
 
 #### Authorization
+
 - JWT-based authentication
 - Role-based access control
 - Protected routes with guards
 
 ### Event System
+
 - Outbox pattern for reliable event publishing
 - PostgreSQL NOTIFY for event subscriptions
 - Domain events for business logic decoupling
 
 ### Shared Services
+
 - Feature flags for gradual rollouts
 - Encryption service for sensitive data
 - Structured logging with pino
@@ -215,23 +243,27 @@ Once running, access the API documentation at:
 ## Development Guidelines
 
 ### Domain Layer Rules
+
 - No NestJS imports in domain layer
 - Pure TypeScript classes and interfaces
 - Business logic only
 - Repository interfaces defined here
 
 ### Application Layer
+
 - Command/Query handlers
 - Use case orchestration
 - Service layer for complex operations
 - DTOs for data transfer
 
 ### Infrastructure Layer
+
 - Prisma repository implementations
 - External service integrations
 - Framework-specific code
 
 ### Presentation Layer
+
 - HTTP controllers only
 - Input validation with class-validator
 - Response transformation
